@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/rival6821/skybiz-lunch#readme",
   "dependencies": {
+    "axios": "^1.6.5",
     "puppeteer": "^21.7.0"
   }
 }

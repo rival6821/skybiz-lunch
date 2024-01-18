@@ -1,3 +1,4 @@
+const { default: axios } = require('axios');
 const puppeteer = require('puppeteer');
 
 const getImg = async (page, url) => {
@@ -28,6 +29,12 @@ const getImg = async (page, url) => {
   const mouseImg = await getImg(page, 'https://pf.kakao.com/_CiVis/'); // 슈마우스
 
   console.log(uncleImg, mouseImg);
+
+  const uploadUrl = 'https://lunch.muz.kr';
+  axios.post(uploadUrl, {
+    uncle: uncleImg,
+    mouse: mouseImg,
+  });
 
   await browser.close();
 })();
