@@ -1,0 +1,22 @@
+{
+  "name": "skybiz-lunch",
+  "version": "1.0.0",
+  "description": "스카이비즈 밥메뉴 알아보기",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rival6821/skybiz-lunch.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/rival6821/skybiz-lunch/issues"
+  },
+  "homepage": "https://github.com/rival6821/skybiz-lunch#readme",
+  "dependencies": {
+    "puppeteer": "^21.7.0"
+  }
+}
