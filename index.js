@@ -1,16 +1,37 @@
 const { default: axios } = require('axios');
 const puppeteer = require('puppeteer');
 
+const todayText = () => {
+  const today = new Date();
+  const year = today.getFullYear();
+  const month = today.getMonth() + 1;
+  const date = today.getDate();
+
+  return `${year}년 ${month}월 ${date}일`;
+}
+
 const getImg = async (page, url) => {
   await page.goto(url);
   const searchResultSelector =
     '.card_cont .box_list_board a .item_thumb .wrap_fit_thumb';
   await page.waitForSelector(searchResultSelector);
+
+  const text = await page.evaluate(() => {
+    return document.querySelector(
+      '.box_list_board a .item_info .tit_info'
+    ).innerHTML;
+  });
+
+  if (!text.includes(todayText())) {
+    return null;
+  }
+
   const image = await page.evaluate(() => {
     return document.querySelector(
       '.box_list_board a .item_thumb .wrap_fit_thumb'
     ).style.backgroundImage;
   });
+
   return image.split('"')[1];
 };
 
@@ -30,11 +51,13 @@ const getImg = async (page, url) => {
 
   console.log(uncleImg, mouseImg);
 
-  const uploadUrl = 'https://lunch.muz.kr';
-  axios.post(uploadUrl, {
-    uncle: uncleImg,
-    mouse: mouseImg,
-  });
+  if (uncleImg || mouseImg) {
+    const uploadUrl = 'https://lunch.muz.kr';
+    axios.post(uploadUrl, {
+      uncle: uncleImg,
+      mouse: mouseImg,
+    });
+  }
 
   await browser.close();
 })();
