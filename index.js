@@ -1,13 +1,10 @@
 const { default: axios } = require('axios');
+const moment = require('moment-timezone');
 const puppeteer = require('puppeteer');
 
 const todayText = () => {
-  const today = new Date();
-  const year = today.getFullYear();
-  const month = today.getMonth() + 1;
-  const date = today.getDate();
-
-  return `${year}년 ${month}월 ${date}일`;
+  const text = moment().tz('Asia/Seoul').format('YYYY년 MM월 DD일');
+  return text;
 }
 
 const getImg = async (page, url) => {

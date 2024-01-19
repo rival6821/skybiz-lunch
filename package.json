@@ -18,6 +18,7 @@
   "homepage": "https://github.com/rival6821/skybiz-lunch#readme",
   "dependencies": {
     "axios": "^1.6.5",
+    "moment-timezone": "^0.5.44",
     "puppeteer": "^21.7.0"
   }
 }
