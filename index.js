@@ -23,11 +23,11 @@ const getImg = async (page, url) => {
         const image = await page.evaluate(() => {
             return document.querySelector(".box_list_board a .item_thumb .wrap_fit_thumb").style.backgroundImage;
         });
+
+        return image.split('"')[1];
     } catch (error) {
         return null;
     }
-
-    return image.split('"')[1];
 };
 
 (async () => {
