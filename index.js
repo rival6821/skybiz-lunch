@@ -9,9 +9,7 @@ const todayText = () => {
 
 const getImg = async (page, url) => {
   await page.goto(url);
-  const searchResultSelector =
-    '.card_cont .box_list_board a .item_thumb .wrap_fit_thumb';
-  await page.waitForSelector(searchResultSelector);
+  await page.waitForSelector('.card_cont .box_list_board a .item_thumb .wrap_fit_thumb', {timeout: 5000});
 
   const text = await page.evaluate(() => {
     return document.querySelector(
