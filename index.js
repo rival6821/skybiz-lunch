@@ -31,6 +31,7 @@ const getImg = async (page, url) => {
 };
 
 (async () => {
+    console.log("=== RUN TIME : " + moment().tz("Asia/Seoul").format("YYYY-MM-DD hh:mm:ss") + " ===");
     const browser = await puppeteer.launch({
         headless: true,
         executablePath: "/usr/bin/chromium-browser",
