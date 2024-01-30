@@ -1,1 +1,1 @@
-node ./index.js
+node ~/skybiz-lunch/index.js
