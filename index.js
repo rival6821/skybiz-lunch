@@ -1,4 +1,4 @@
-const { default: axios } = require("axios");
+const axios = require("axios");
 const moment = require("moment-timezone");
 const puppeteer = require("puppeteer");
 
@@ -32,6 +32,17 @@ const getImg = async (page, url) => {
 
 (async () => {
     console.log("=== RUN TIME : " + moment().tz("Asia/Seoul").format("YYYY-MM-DD hh:mm:ss") + " ===");
+
+    // 작업 필요유무 체크
+    const check = await axios.get("https://lunch.muz.kr?check=true");
+    if (check.status == 200 && check.data?.result === true) {
+        console.log("이미 ")
+    }
+    console.log(check.data);
+
+    return;
+
+
     const browser = await puppeteer.launch({
         headless: true,
         executablePath: "/usr/bin/chromium-browser",
