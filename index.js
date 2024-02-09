@@ -35,13 +35,13 @@ const getImg = async (page, url) => {
 
     // 작업 필요유무 체크
     const check = await axios.get("https://lunch.muz.kr?check=true");
-    if (check.status == 200 && check.data?.result === true) {
-        console.log("이미 ")
+    let urlCheck = true;
+    if (check.status == 200 && check.data.result) {
+        for (const [key, value] in check.data.result) {
+            if (!value) urlCheck = false;
+        }
+        if (urlCheck) return;
     }
-    console.log(check.data);
-
-    return;
-
 
     const browser = await puppeteer.launch({
         headless: true,
