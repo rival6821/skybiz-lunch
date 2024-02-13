@@ -46,7 +46,7 @@ const workDoneCheck = async () => {
     console.log("=== RUN TIME : " + moment().tz("Asia/Seoul").format("YYYY-MM-DD hh:mm:ss") + " ===");
 
     // 작업 필요유무 체크
-    if (this.workDoneCheck()) {
+    if (workDoneCheck()) {
         console.log('WORK DONE!');
         return;
     }
