@@ -30,17 +30,25 @@ const getImg = async (page, url) => {
     }
 };
 
-(async () => {
-    console.log("=== RUN TIME : " + moment().tz("Asia/Seoul").format("YYYY-MM-DD hh:mm:ss") + " ===");
-
-    // 작업 필요유무 체크
+const workDoneCheck = async () => {
     const check = await axios.get("https://lunch.muz.kr?check=true");
     let urlCheck = true;
     if (check.status == 200 && check.data.result) {
         for (const [key, value] in check.data.result) {
             if (!value) urlCheck = false;
         }
-        if (urlCheck) return;
+        if (urlCheck) return true;
+    }
+    return false;
+}
+
+(async () => {
+    console.log("=== RUN TIME : " + moment().tz("Asia/Seoul").format("YYYY-MM-DD hh:mm:ss") + " ===");
+
+    // 작업 필요유무 체크
+    if (this.workDoneCheck()) {
+        console.log('WORK DONE!');
+        return;
     }
 
     const browser = await puppeteer.launch({
