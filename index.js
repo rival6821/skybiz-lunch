@@ -34,7 +34,8 @@ const workDoneCheck = async () => {
     const check = await axios.get("https://lunch.muz.kr?check=true");
     if (check.status == 200 && check.data.result) {
         let urlCheck = true;
-        for (const [key, value] in check.data.result) {
+        for (const key in check.data.result) {
+            const value = check.data.result[key];
             if (!value) urlCheck = false;
         }
         return urlCheck;
