@@ -32,12 +32,12 @@ const getImg = async (page, url) => {
 
 const workDoneCheck = async () => {
     const check = await axios.get("https://lunch.muz.kr?check=true");
-    let urlCheck = true;
     if (check.status == 200 && check.data.result) {
+        let urlCheck = true;
         for (const [key, value] in check.data.result) {
             if (!value) urlCheck = false;
         }
-        if (urlCheck) return true;
+        return urlCheck;
     }
     return false;
 }
