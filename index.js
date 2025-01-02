@@ -65,6 +65,8 @@ const workDoneCheck = async () => {
     const uncleImg = await getImg(page, "https://pf.kakao.com/_FxbaQC"); // 삼촌밥차
     const mouseImg = await getImg(page, "https://pf.kakao.com/_CiVis/"); // 슈마우스
 
+    // 정담 https://pf.kakao.com/_vKxgdn/posts
+
     console.log(uncleImg, mouseImg);
 
     if (uncleImg || mouseImg) {
