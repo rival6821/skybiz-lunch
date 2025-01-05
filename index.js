@@ -3,7 +3,6 @@ const moment = require("moment-timezone");
 const puppeteer = require("puppeteer");
 
 const todayText = moment().tz("Asia/Seoul").format("YYYY년 MM월 DD일");
-// const todayText = "2025년 01월 03일";
 
 const getImg = async (page, url) => {
     console.log(`Navigating to URL: ${url}`);
@@ -62,12 +61,14 @@ const getPostImg = async (page, url) => {
                 .map(element => {
                     const image = element.querySelector(".wrap_fit_thumb")?.style.backgroundImage;
                     console.log(`Image : ${image}`);
-                    return image;
+                    if (!image) return null;
+                    return image.split('"')[1];
                 });
         }, todayText);
 
-        console.log(`Extracted cards: ${cards}`);
-        return cards;
+        const filteredCards = cards.filter(card => !!card);
+        console.log(`Extracted cards: ${filteredCards}`);
+        return filteredCards ? filteredCards[0] : null;
     } catch (error) {
         console.error(`Error in getPostImg: ${error.message}`);
         return null;
