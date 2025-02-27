@@ -123,9 +123,9 @@ const workDoneCheck = async () => {
             console.log(`uncleImg: ${uncleImg}, mouseImg: ${mouseImg}, jundamImg: ${jundamImg}`);
             const uploadUrl = "https://lunch.muz.kr";
             await axios.post(uploadUrl, {
-                uncle: uncleImg,
-                mouse: mouseImg,
-                jundam: jundamImg,
+                uncle: uncleImg || '',
+                mouse: mouseImg || '',
+                jundam: jundamImg || '',
             });
             console.log('Images uploaded successfully.');
         } else {
