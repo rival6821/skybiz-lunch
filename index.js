@@ -1,9 +1,8 @@
 const axios = require("axios");
 const moment = require("moment-timezone");
 const puppeteer = require("puppeteer");
-const logger = require('pino')({
-    timestamp: () => `,"time":"${moment().tz("Asia/Seoul").format()}"`
-});
+const pretty = require('pino-pretty')
+const logger = require('pino')(pretty());
 
 const todayText = moment().tz("Asia/Seoul").format("YYYY년 MM월 DD일");
 
