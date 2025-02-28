@@ -49,20 +49,20 @@ const getPostImg = async (page, url) => {
 
         const cards = await page.evaluate((todayText) => {
             const elements = document.querySelectorAll(".wrap_webview .area_card");
-            logger.info(`Found ${elements.length} .area_card elements`);
+            console.log(`Found ${elements.length} .area_card elements`);
             return Array.from(elements)
                 .filter(element => {
                     const title = element.querySelector(".tit_card")?.innerText || "";
                     const includesText = title.includes(todayText);
-                    logger.info(`Title: ${title}, Includes todayText: ${includesText}`);
+                    console.log(`Title: ${title}, Includes todayText: ${includesText}`);
                     // const desc = element.querySelector(".desc_card")?.innerHTML || "";
-                    // logger.info(`Desc: ${desc}`);
+                    // console.log(`Desc: ${desc}`);
                     // 제목 형태가 달라지는 경우가 고민임.
                     return includesText;
                 })
                 .map(element => {
                     const image = element.querySelector(".wrap_fit_thumb")?.style.backgroundImage;
-                    logger.info(`Image : ${image}`);
+                    console.log(`Image : ${image}`);
                     if (!image) return null;
                     return image.split('"')[1];
                 });
