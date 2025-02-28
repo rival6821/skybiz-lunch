@@ -56,11 +56,9 @@ const getPostImg = async (page, url) => {
             return Array.from(elements)
                 .filter(element => {
                     const title = element.querySelector(".tit_card")?.innerText || "";
+                    if (title === '') return false;
                     const includesText = title.includes(todayText);
                     console.log(`Title: ${title}, Includes todayText: ${includesText}`);
-                    // const desc = element.querySelector(".desc_card")?.innerHTML || "";
-                    // console.log(`Desc: ${desc}`);
-                    // 제목 형태가 달라지는 경우가 고민임.
                     return includesText;
                 })
                 .map(element => {
