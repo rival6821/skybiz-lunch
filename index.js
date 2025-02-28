@@ -48,8 +48,11 @@ const getPostImg = async (page, url) => {
         });
 
         const cards = await page.evaluate((todayText) => {
-            const elements = document.querySelectorAll(".wrap_webview .area_card");
+            let elements = document.querySelectorAll(".wrap_webview .area_card");
             console.log(`Found ${elements.length} .area_card elements`);
+            if (elements.length === 0) return [];
+            // elements 상위 5개만 추출
+            elements = Array.from(elements).slice(0, 5);
             return Array.from(elements)
                 .filter(element => {
                     const title = element.querySelector(".tit_card")?.innerText || "";
