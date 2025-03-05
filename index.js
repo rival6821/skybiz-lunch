@@ -2,7 +2,15 @@ const axios = require("axios");
 const moment = require("moment-timezone");
 const puppeteer = require("puppeteer");
 const pretty = require('pino-pretty')
-const logger = require('pino')(pretty());
+const logger = pino({
+    transport: {
+      target: 'pino-pretty',
+      options: {
+        translateTime: 'SYS:yyyy-mm-dd HH:MM:ss',
+        ignore: 'pid,hostname'
+      }
+    }
+  });
 
 const todayText = moment().tz("Asia/Seoul").format("YYYY년 MM월 DD일");
 
