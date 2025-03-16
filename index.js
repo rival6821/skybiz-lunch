@@ -1,6 +1,5 @@
 const axios = require("axios");
 const moment = require("moment-timezone");
-const puppeteer = require("puppeteer");
 const pino = require('pino');
 const logger = pino({
   transport: {
@@ -12,76 +11,57 @@ const logger = pino({
   }
 });
 
-const todayText = moment().tz("Asia/Seoul").format("YYYY년 MM월 DD일");
-
-const getImg = async (page, url) => {
-    logger.info(`Navigating to URL: ${url}`);
+const getImage = async (id) => {
+    const url = `https://pf.kakao.com/rocket-web/web/profiles/${id}/posts`
+    console.log(`Fetching image from ${url}`);
     try {
-        await page.goto(url);
-        await page.waitForSelector(".card_cont .box_list_board a .item_thumb .wrap_fit_thumb", { timeout: 5000 });
-
-        const text = await page.evaluate(() => {
-            return document.querySelector(".box_list_board a .item_info .tit_info").innerHTML;
-        });
-
-        logger.info(`Fetched text: ${text}`);
-
-        if (!text.includes(todayText)) {
-            logger.info(`Today's text not found in the content.`);
-            return null;
+        const response = await axios.get(url);
+        // console.log(`Response: ${JSON.stringify(response.data)}`);
+        if (response.status === 200) {
+            const data = response.data;
+            if (!data) {
+                console.log("No data found");
+                return null;
+            }
+            const items = data.items;
+            if (!items) {
+                console.log("No items found");
+                return null;
+            }
+            // 오늘 작성된 포스트만 필터링
+            const todayItem = items.filter(item => {
+                return item.created_at >= moment().startOf('day').unix() && item.created_at <= moment().endOf('day').unix() && item.type === "image";
+                // 2025년 3월 14일 날자로 테스트
+                // const startTime = moment("2025-03-13").startOf('day').unix()*1000;
+                // const endTime = moment("2025-03-14").endOf('day').unix()*1000;
+                // return item.created_at >= startTime && item.created_at <= endTime && item.type === "image";
+            });
+            console.log(`Found ${todayItem.length} posts today`);
+            if (todayItem.length === 0) {
+                console.log("No posts found today");
+                return null;
+            }
+            // TODO: 동일 일지에 이미지 2개 올리면 고민해봐야함.
+            const media = todayItem[0].media;
+            if (!media) {
+                console.log("No media found");
+                return null;
+            }
+            // 여러 이미지 중 조건 부로 다른 이미지가 필요함.
+            if (id === "_FxbaQC") {
+                // 삼촌 : 마지막
+                return media[media.length - 1].large_url;
+            } else if (id === "_CiVis") {
+                // 마우스 : 첫번째
+                return media[0].large_url;
+            } else if (id === "_vKxgdn") {
+                // 정담 : 첫번째
+                return media[0].large_url;
+            }
         }
-
-        const image = await page.evaluate(() => {
-            return document.querySelector(".box_list_board a .item_thumb .wrap_fit_thumb").style.backgroundImage;
-        });
-
-        logger.info(`Fetched image style: ${image}`);
-        return image.split('"')[1];
-    } catch (error) {
-        logger.error(`Error in getImg: ${error.message}`);
         return null;
-    }
-};
-
-const getPostImg = async (page, url) => {
-    logger.info(`Navigating to URL: ${url}`); // 추가됨
-    try {
-        await page.goto(url);
-        await page.waitForSelector(".wrap_webview .area_card .wrap_archive_txt", {timeout: 5000});
-        
-        // 페이지 콘솔 로그를 Node.js 콘솔로 전달
-        page.on('console', msg => {
-            for (let i = 0; i < msg.args().length; ++i)
-                logger.info(`PAGE LOG: ${msg.args()[i]}`);
-        });
-
-        const cards = await page.evaluate((todayText) => {
-            let elements = document.querySelectorAll(".wrap_webview .area_card");
-            console.log(`Found ${elements.length} .area_card elements`);
-            if (elements.length === 0) return [];
-            // elements 상위 5개만 추출
-            elements = Array.from(elements).slice(0, 5);
-            return Array.from(elements)
-                .filter(element => {
-                    const title = element.querySelector(".tit_card")?.innerText || "";
-                    if (title === '') return false;
-                    const includesText = title.includes(todayText);
-                    console.log(`Title: ${title}, Includes todayText: ${includesText}`);
-                    return includesText;
-                })
-                .map(element => {
-                    const image = element.querySelector(".wrap_fit_thumb")?.style.backgroundImage;
-                    console.log(`Image : ${image}`);
-                    if (!image) return null;
-                    return image.split('"')[1];
-                });
-        }, todayText);
-
-        const filteredCards = cards.filter(card => !!card);
-        logger.info(`Extracted cards: ${filteredCards}`);
-        return filteredCards ? filteredCards[0] : null;
     } catch (error) {
-        logger.error(`Error in getPostImg: ${error.message}`);
+        console.error(`Error in getImage: ${error.message}`);
         return null;
     }
 }
@@ -108,47 +88,29 @@ const workDoneCheck = async () => {
             return;
         }
 
-        const browser = await puppeteer.launch({
-            headless: true,
-            executablePath: "/usr/bin/chromium-browser",
-            // m1 맥북
-            // executablePath: "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
-            args: ['--no-sandbox', '--disable-setuid-sandbox']
-        });
-        const page = await browser.newPage();
-
-        await page.setUserAgent("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36 Edg/120.0.0.0");
-
         logger.info('Fetching uncleImg...');
-        const uncleImg = await getImg(page, "https://pf.kakao.com/_FxbaQC"); // 삼촌밥차
+        const uncleImg = await getImage("_FxbaQC"); // 삼촌
 
         logger.info('Fetching mouseImg...');
-        const mouseImg = await getImg(page, "https://pf.kakao.com/_CiVis/"); // 슈마우스
+        const mouseImg = await getImage("_CiVis"); // 슈마우스
 
         logger.info('Fetching jundamImg...');
-        const jundamImg = await getPostImg(page, "https://pf.kakao.com/_vKxgdn/posts"); // 정담
+        const jundamImg = await getImage("_vKxgdn"); // 정담
+        logger.info(`jundamImg: ${jundamImg}`);
 
         if (uncleImg || mouseImg || jundamImg) {
             logger.info(`uncleImg: ${uncleImg}, mouseImg: ${mouseImg}, jundamImg: ${jundamImg}`);
-            const uploadUrl = "https://lunch.muz.kr";
-            await axios.post(uploadUrl, {
-                uncle: uncleImg || '',
-                mouse: mouseImg || '',
-                jundam: jundamImg || '',
-            });
+            // const uploadUrl = "https://lunch.muz.kr";
+            // await axios.post(uploadUrl, {
+            //     uncle: uncleImg || '',
+            //     mouse: mouseImg || '',
+            //     jundam: jundamImg || '',
+            // });
             logger.info('Images uploaded successfully.');
         } else {
             logger.info('No images to upload.');
         }
-
-        await browser.close();
-        logger.info('Browser closed.');
     } catch (error) {
         logger.error(`Error in main execution: ${error.message}`);
-        // 브라우저가 열려 있다면 닫기
-        if (browser) {
-            await browser.close();
-            logger.info('Browser closed due to error.');
-        }
     }
 })();
