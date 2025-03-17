@@ -1,6 +1,6 @@
 {
   "name": "skybiz-lunch",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "description": "스카이비즈 밥메뉴 알아보기",
   "main": "index.js",
   "scripts": {
@@ -20,7 +20,6 @@
     "axios": "^1.6.5",
     "moment-timezone": "^0.5.44",
     "pino": "^9.6.0",
-    "pino-pretty": "^13.0.0",
-    "puppeteer": "^23.11.1"
+    "pino-pretty": "^13.0.0"
   }
 }
