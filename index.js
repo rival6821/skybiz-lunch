@@ -11,6 +11,9 @@ const logger = pino({
   }
 });
 
+// moment-timezone 설정
+moment.tz.setDefault("Asia/Seoul");
+
 const getImage = async (id) => {
     const url = `https://pf.kakao.com/rocket-web/web/profiles/${id}/posts`
     console.log(`Fetching image from ${url}`);
@@ -30,18 +33,14 @@ const getImage = async (id) => {
             }
             // 오늘 작성된 포스트만 필터링
             const todayItem = items.filter(item => {
-                return item.created_at >= moment().startOf('day').unix() && item.created_at <= moment().endOf('day').unix() && item.type === "image";
-                // 2025년 3월 14일 날자로 테스트
-                // const startTime = moment("2025-03-13").startOf('day').unix()*1000;
-                // const endTime = moment("2025-03-14").endOf('day').unix()*1000;
-                // return item.created_at >= startTime && item.created_at <= endTime && item.type === "image";
+                return item.created_at >= moment().startOf('day').unix()*1000 && item.type === "image";
             });
             console.log(`Found ${todayItem.length} posts today`);
             if (todayItem.length === 0) {
                 console.log("No posts found today");
                 return null;
             }
-            // TODO: 동일 일지에 이미지 2개 올리면 고민해봐야함.
+            // NOTE: 동일 일지에 이미지 2개 올리면 고민해봐야함.
             const media = todayItem[0].media;
             if (!media) {
                 console.log("No media found");
