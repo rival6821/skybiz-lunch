@@ -40,7 +40,7 @@ const getImage = async (id) => {
                 console.log("No posts found today");
                 return null;
             }
-            // NOTE: 동일 일지에 이미지 2개 올리면 고민해봐야함.
+            // NOTE: 동일 일자에 이미지 2개 올리면 고민해봐야함.
             const media = todayItem[0].media;
             if (!media) {
                 console.log("No media found");
