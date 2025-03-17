@@ -99,12 +99,12 @@ const workDoneCheck = async () => {
 
         if (uncleImg || mouseImg || jundamImg) {
             logger.info(`uncleImg: ${uncleImg}, mouseImg: ${mouseImg}, jundamImg: ${jundamImg}`);
-            // const uploadUrl = "https://lunch.muz.kr";
-            // await axios.post(uploadUrl, {
-            //     uncle: uncleImg || '',
-            //     mouse: mouseImg || '',
-            //     jundam: jundamImg || '',
-            // });
+            const uploadUrl = "https://lunch.muz.kr";
+            await axios.post(uploadUrl, {
+                uncle: uncleImg || '',
+                mouse: mouseImg || '',
+                jundam: jundamImg || '',
+            });
             logger.info('Images uploaded successfully.');
         } else {
             logger.info('No images to upload.');
