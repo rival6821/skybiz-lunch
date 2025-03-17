@@ -16,34 +16,34 @@ moment.tz.setDefault("Asia/Seoul");
 
 const getImage = async (id) => {
     const url = `https://pf.kakao.com/rocket-web/web/profiles/${id}/posts`
-    console.log(`Fetching image from ${url}`);
+    logger.info(`Fetching image from ${url}`);
     try {
         const response = await axios.get(url);
         // console.log(`Response: ${JSON.stringify(response.data)}`);
         if (response.status === 200) {
             const data = response.data;
             if (!data) {
-                console.log("No data found");
+                logger.warn("No data found");
                 return null;
             }
             const items = data.items;
             if (!items) {
-                console.log("No items found");
+                logger.warn("No items found");
                 return null;
             }
             // 오늘 작성된 포스트만 필터링
             const todayItem = items.filter(item => {
                 return item.created_at >= moment().startOf('day').unix()*1000 && item.type === "image";
             });
-            console.log(`Found ${todayItem.length} posts today`);
+            logger.info(`Found ${todayItem.length} posts today`);
             if (todayItem.length === 0) {
-                console.log("No posts found today");
+                logger.warn("No posts found today");
                 return null;
             }
             // NOTE: 동일 일자에 이미지 2개 올리면 고민해봐야함.
             const media = todayItem[0].media;
             if (!media) {
-                console.log("No media found");
+                logger.warn("No media found");
                 return null;
             }
             // 여러 이미지 중 조건 부로 다른 이미지가 필요함.
@@ -60,7 +60,7 @@ const getImage = async (id) => {
         }
         return null;
     } catch (error) {
-        console.error(`Error in getImage: ${error.message}`);
+        logger.error(`Error in getImage: ${error.message}`);
         return null;
     }
 }
@@ -87,13 +87,13 @@ const workDoneCheck = async () => {
             return;
         }
 
-        logger.info('Fetching uncleImg...');
+        logger.info('Fetching uncle...');
         const uncleImg = await getImage("_FxbaQC"); // 삼촌
 
-        logger.info('Fetching mouseImg...');
+        logger.info('Fetching mouse...');
         const mouseImg = await getImage("_CiVis"); // 슈마우스
 
-        logger.info('Fetching jundamImg...');
+        logger.info('Fetching jundam...');
         const jundamImg = await getImage("_vKxgdn"); // 정담
         logger.info(`jundamImg: ${jundamImg}`);
 
